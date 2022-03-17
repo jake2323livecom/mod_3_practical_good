@@ -20,14 +20,6 @@
         dest: "{{ playbook_dir }}/{{ start_time }}-configs/{{ inventory_hostname }}.cfg"
       delegate_to: localhost
       ignore_errors: true
-
-    - name: Copy a "sudoers" file on the remote machine for editing
-      copy:
-        src: "{{ playbook_dir}}/{{ start_time }}-configs/"
-        dest: /home/jake/
-        remote_src: yes
-      delegate_to: localhost
-      run_once: true
       
 
 
