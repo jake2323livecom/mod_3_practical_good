@@ -1,0 +1,18 @@
+hostname {{ inventory_hostname }}
+!
+{# import your dns_servers.j2 template here #}
+{% include './dns_servers.j2' %}
+!
+{# import your pysical_interfaces.j2 template here #}
+{% include './physical_interfaces.j2' %}
+!
+{# import your virtual_interfaces.j2 template here #}
+{% include './management_interface.j2' %}
+!
+log server {{ syslog_server | default('no syslog server defined') }}
+!
+line vty 0 4
+  logging synchronous
+  transport input ssh
+  transport output ssh
+  no login

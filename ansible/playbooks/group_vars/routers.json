@@ -1,0 +1,4 @@
+{
+    "device_type": "router",
+    "management_interface": "Loopback0"
+}

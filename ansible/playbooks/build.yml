@@ -1,0 +1,34 @@
+---
+- hosts: all
+  gather_facts: no
+
+  tasks:
+    - name: set start time
+      set_fact:
+        start_time: "{{ lookup('pipe', 'date +%Y%m%d%H%M%S') }}"
+      delegate_to: localhost
+
+    - name: create directory to store configs
+      file:
+        path: "{{ playbook_dir }}/{{ start_time}}-configs/"
+        state: directory
+      delegate_to: localhost
+
+    - name: generate config files
+      template:
+        src: base.j2
+        dest: "{{ playbook_dir }}/{{ start_time }}-configs/{{ inventory_hostname }}.cfg"
+      delegate_to: localhost
+      ignore_errors: true
+
+    - name: Copy a "sudoers" file on the remote machine for editing
+      copy:
+        src: "{{ playbook_dir}}/{{ start_time }}-configs/"
+        dest: /home/jake/
+        remote_src: yes
+      delegate_to: localhost
+      run_once: true
+      
+
+
+  

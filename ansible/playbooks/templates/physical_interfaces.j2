@@ -1,0 +1,6 @@
+{% for num in range(0,4) %}
+!
+interface {{ 'Ge' if device_type == 'router' else 'Fe' }}0/{{ num }}
+  ip address 5.5.5.5 255.255.255.0
+!
+{% endfor %}
