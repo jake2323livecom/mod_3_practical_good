@@ -6,46 +6,47 @@
 - yaml/json
 - ansible
 
-## Build device configuration files with Ansible :D
+## Build device configuration files with Ansible
 
-- clone the exam repo to your machine and go to that directory
-- create a new branch from the development branch
-- install ansible
-- create hosts.ini file for inventory
-    - create group called 'routers'
-        - define 4 hosts:
-            - router_1 with primary ip address of 1.1.1.1
-            - router_2 with primary ip address of 2.2.2.2
-            - router_3 with primary ip address of 3.3.3.3
-            - router_4 with primary ip address of 4.4.4.4
-    - create group called 'switches'
-        - define 4 hosts
-            - switch_1 with primary ip of 172.16.1.1
-            - switch_2 with primary ip of 172.16.1.2
-            - switch_3 with primary ip of 172.16.1.3
-            - switch_4 with primary ip of 172.16.1.4
-    - define group 'all'
-        - make routers and switches child groups of 'all'
+- Clone the exam repo to your machine and go to that directory
+- Create a new branch from the development branch
+- Install ansible
+- Using ansible-galaxy, install the netcommon collection
+- Configure the ansible config file to allow inventory scripts to be used as inventory sources
+- Finish the 'inventory.py' dynamic inventory file
 
-- create a folder to store files for group variables
-    - create a json file for the group all
-        - define a variable called 'dns_servers' and set it to this list of IPs: 8.8.8.8, 8.8.4.4
-    - create json file for routers
-        - define a variable called management_interface and set it to Loopback0
-        - define a variable called device_type and set it equal to 'router'
-    - create json file for switches
-        - define a variable called management_interface and set it to Vlan1000
-        - define a variable called device_type and set it equal to 'switch'
+    - Use API calls to Nautobot to pull necessary information
 
-- In base.j2, fill in the empty variable call after 'hostname' on the first line
+    - The resulting inventory should include:
+        - A hostvars section containing every device from the 'orko' site in Nautobot.
+            - Each device should have the ansible_host variable and device_type variable
+        - A group of devices that have a device_role of 'router' in Nautobot. Name the group 'routers'.
+        - A group of devices that have a device_role of 'switch' in Nautobot. Name the group 'switches'.
+        - A group of devices that have a platform of 'red' in Nautobot. Name the group 'red_devices'.
+        - A group of devices that have a platform of 'yellow' in Nautobot.  Name the group 'yellow_devices'.
 
-- create template to generate interface configurations
-    - using a for loop, create four physical interfaces
-        - resulting interface numbers should be 0/0, 0/1, 0/2, 0/3
-        - set the interface type to 'Ge' if the device_type is 'router' else 'Fe'.
-        - For a router, the output would be Ge0/0, Ge0/1, Ge0/2, Ge0/3
-        - for a switch, the output would be Fe0/0, Fe0/1, Fe0/2, Fe0/3
-        - for the sake of simplicity, set the ip address of each interface to 5.5.5.5 255.255.255.0
+    - Print the inventory to STDOUT in JSON format
+
+- Create a folder to store files for group variables
+
+    - Create a JSON file for the 'red_devices' group 
+        - Define a variable called 'dns_servers' and set it to this list of IPs: 10.10.20.98, 10.10.20.99
+
+    - Create a JSON file for the 'yellow_devices' group
+        - Define a variable called 'dns_servers' and set it to this list of IPs: 10.10.30.98, 10.10.30.99
+
+    - Create a JSON file for the 'routers' group
+        - Define a variable called 'management_interface' and set it to 'Loopback0'
+
+    - Create JSON file for the 'switches' group
+        - Define a variable called 'management_interface' and set it to 'Vlan1000'
+
+- In base.j2, fill in the empty variable call after 'hostname' on the first line using an ansible special variable
+
+- Finish the 'physical_interfaces.j2' template to generate the configuration for all physical interfaces
+    - Loop through the 'interfaces' variable defined in the 'all.json' group_vars file
+    - Configure each interface's IP address and subnet mask
+        - Use the appropriate data from the 'interfaces' variable
 
 - create template to generate the configuration for dns servers
     - using a for loop, create a line that contains the IP address of each server in the dns_servers variable

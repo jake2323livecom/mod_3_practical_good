@@ -1,2 +1,3 @@
-interface {{ mgmt_interface }}
-  ip address {{ ansible_host }} 255.255.255.255
+interface {{ management_interface }}
+  ip address {{ ansible_host | ipaddr('address') }} {{ '255.255.255.255' if device_type == 'router' else '255.255.255.0' }}
+ 

@@ -1,2 +1,5 @@
-interface G0/0
-  ip address 1.1.1.1 255.255.255.255
+{% for interface in interfaces %}
+interface {{ interface.name }}
+  {{ interface.address }} {{ interface.mask }}
+!
+{% endfor %}
