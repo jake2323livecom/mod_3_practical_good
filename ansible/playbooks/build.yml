@@ -1,6 +1,7 @@
 ---
-- hosts: all
-  gather_facts: no
+- name: build config files
+  hosts: all
+  gather_facts: false
 
   tasks:
     - name: set start time
@@ -20,7 +21,3 @@
         dest: "{{ playbook_dir }}/{{ start_time }}-configs/{{ inventory_hostname }}.cfg"
       delegate_to: localhost
       ignore_errors: true
-      
-
-
-  

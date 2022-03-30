@@ -1,17 +1,15 @@
 hostname {{ inventory_hostname }}
 !
 {# import your dns_servers.j2 template here #}
-{% include './dns_servers.j2' %}
-
+{% include 'dns_servers.j2' %}
 !
 {# import your pysical_interfaces.j2 template here #}
-{% include './physical_interfaces.j2' %}
+{% include 'physical_interfaces.j2' %}
 !
-{# import your virtual_interfaces.j2 template here #}
-{% include './management_interface.j2' %}
-
+{# import your management_interface.j2 template here #}
+{% include 'management_interface.j2' %}
 !
-log server {{ syslog_server | default('no syslog server defined') }}
+logging host {{ syslog_server | default('none') }}
 !
 line vty 0 4
   logging synchronous
